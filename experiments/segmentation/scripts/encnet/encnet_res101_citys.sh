@@ -3,7 +3,7 @@
 #train
 CUDA_VISIBLE_DEVICES=0,1,2,3 python -m experiments.segmentation.train --dataset citys \
     --model encnet --jpu --aux --se-loss --no-val \
-    --backbone resnet101 --checkname encnet_res50_citys
+    --backbone resnet101 --checkname encnet_res101_citys
 
 #test [single-scale]
 CUDA_VISIBLE_DEVICES=0,1,2,3 python -m experiments.segmentation.test --dataset citys \
