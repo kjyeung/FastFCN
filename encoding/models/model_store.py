@@ -9,9 +9,11 @@ from ..utils import download, check_sha1
 __all__ = ['get_model_file', 'purge']
 
 _model_sha1 = {name: checksum for checksum, name in [
-    ('ebb6acbbd1d1c90b7f446ae59d30bf70c74febc1', 'resnet50'),
-    ('2a57e44de9c853fa015b172309a1ee7e2d0e4e2a', 'resnet101'),
-    ('0d43d698c66aceaa2bc0309f55efdd7ff4b143af', 'resnet152'),
+    # resnet other variants
+    ('a75c83cfc89a56a4e8ba71b14f1ec67e923787b3', 'resnet50'),
+    ('03a0f310d6447880f1b22a83bd7d1aa7fc702c6e', 'resnet101'),
+    ('36670e8bc2428ecd5b7db1578538e2dd23872813', 'resnet152'),
+
     ('662e979de25a389f11c65e9f1df7e06c2c356381', 'fcn_resnet50_ade'),
     ('eeed8e582f0fdccdba8579e7490570adc6d85c7c', 'fcn_resnet50_pcontext'),
     ('54f70c772505064e30efd1ddd3a14e1759faa363', 'psp_resnet50_ade'),
@@ -23,8 +25,8 @@ _model_sha1 = {name: checksum for checksum, name in [
     ('3f54fa3b67bac7619cd9b3673f5c8227cf8f4718', 'encnet_resnet101_ade'),
     ]}
 
-encoding_repo_url = 'https://hangzh.s3.amazonaws.com/'
-_url_format = '{repo_url}encoding/models/{file_name}.zip'
+encoding_repo_url = 'https://s3.us-west-1.wasabisys.com/encoding'
+_url_format = '{repo_url}models/{file_name}.zip'
 
 def short_hash(name):
     if name not in _model_sha1:
@@ -69,14 +71,20 @@ def get_model_file(name, root=os.path.join('~', '.encoding', 'models')):
     repo_url = os.environ.get('ENCODING_REPO', encoding_repo_url)
     if repo_url[-1] != '/':
         repo_url = repo_url + '/'
-    download(_url_format.format(repo_url=repo_url, file_name=file_name),
+    # According to Pytorch-Encoding repo, the original ResNet pretrained models are renamed to resnet50s/101s/152s
+    # So we add an 's'
+    s_file_name = '{name}-{short_hash}'.format(name=name+'s', short_hash=short_hash(name))
+    s_file_path = os.path.join(root, s_file_name + '.pth')
+
+    download(_url_format.format(repo_url=repo_url, file_name=s_file_name),
              path=zip_file_path,
-             overwrite=True)
+             overwrite=False)
     with zipfile.ZipFile(zip_file_path) as zf:
         zf.extractall(root)
     os.remove(zip_file_path)
 
-    if check_sha1(file_path, sha1_hash):
+    if check_sha1(s_file_path, sha1_hash):
+        os.rename(s_file_path, file_path)
         return file_path
     else:
         raise ValueError('Downloaded file has different hash. Please try again.')
