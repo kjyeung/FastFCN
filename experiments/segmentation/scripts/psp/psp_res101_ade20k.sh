@@ -8,7 +8,7 @@ CUDA_VISIBLE_DEVICES=0,1,2,3 python -m experiments.segmentation.train --dataset 
 #test [single-scale]
 CUDA_VISIBLE_DEVICES=0,1,2,3 python -m experiments.segmentation.test --dataset ade20k \
     --model psp --jpu --aux \
-    --backbone resnet101 --resume {MODEL} --split val --mode testval
+    --backbone resnet101 --resume ${MODEL} --split val --mode testval
 
 #test [multi-scale]
 CUDA_VISIBLE_DEVICES=0,1,2,3 python -m experiments.segmentation.test --dataset ade20k \

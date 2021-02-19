@@ -8,7 +8,8 @@ CUDA_VISIBLE_DEVICES=0,1,2,3 python -m experiments.segmentation.train --dataset 
 #test [single-scale]
 CUDA_VISIBLE_DEVICES=0,1,2,3 python -m experiments.segmentation.test --dataset ade20k \
     --model encnet --jpu --aux --se-loss \
-    --backbone resnet50 --resume {MODEL} --split val --mode testval
+    --backbone resnet50 --resume /home/kaijie/workspace/FastFCN/experiments/segmentation/runs/ade20k/encnet/encnet_res50_ade20k_train/checkpoint_119.pth.tar \
+     --split val --mode testval
 
 #test [multi-scale]
 CUDA_VISIBLE_DEVICES=0,1,2,3 python -m experiments.segmentation.test --dataset ade20k \

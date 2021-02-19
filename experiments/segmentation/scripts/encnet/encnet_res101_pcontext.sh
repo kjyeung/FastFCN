@@ -26,6 +26,6 @@ CUDA_VISIBLE_DEVICES=0,1,2,3 python -m experiments.segmentation.test --dataset p
     --backbone resnet101 --resume {MODEL} --split val --mode test --ms
 
 #fps
-CUDA_VISIBLE_DEVICES=0 python -m experiments.segmentation.test_fps_params --dataset pcontext \
+CUDA_VISIBLE_DEVICES=1 python -m experiments.segmentation.test_fps_params --dataset pcontext \
     --model encnet --jpu --aux --se-loss \
     --backbone resnet101
