@@ -157,6 +157,24 @@ def get_city_pairs(folder, split='train'):
         print('Found {} images in the folder {}'.format(len(img_paths), img_folder))
         return img_paths, mask_paths
 
+    def get_coarse_path_pairs(img_folder, mask_folder):
+        img_paths = []
+        mask_paths = []
+        for root, directories, files in os.walk(img_folder):
+            for filename in files:
+                if filename.endswith(".png"):
+                    imgpath = os.path.join(root, filename)
+                    foldername = os.path.basename(os.path.dirname(imgpath))
+                    maskname = filename.replace('leftImg8bit','gtCoarse_labelIds')
+                    maskpath = os.path.join(mask_folder, foldername, maskname)
+                    if os.path.isfile(imgpath) and os.path.isfile(maskpath):
+                        img_paths.append(imgpath)
+                        mask_paths.append(maskpath)
+                    else:
+                        print('cannot find the mask or image:', imgpath, maskpath)
+        print('Found {} images in the folder {}'.format(len(img_paths), img_folder))
+        return img_paths, mask_paths
+
     if split == 'train' or split == 'val' or split == 'test':
         img_folder = os.path.join(folder, 'leftImg8bit/' + split)
         mask_folder = os.path.join(folder, 'gtFine/'+ split)
@@ -184,7 +202,7 @@ def get_city_pairs(folder, split='train'):
         extra_mask_folder = os.path.join(folder, 'gtCoarse/train_extra')
         train_img_paths, train_mask_paths = get_path_pairs(train_img_folder, train_mask_folder)
         val_img_paths, val_mask_paths = get_path_pairs(val_img_folder, val_mask_folder)
-        extra_img_paths, extra_mask_paths = get_path_pairs(extra_img_folder, extra_mask_folder)
+        extra_img_paths, extra_mask_paths = get_coarse_path_pairs(extra_img_folder, extra_mask_folder)
         img_paths = train_img_paths + val_img_paths + extra_img_paths
         mask_paths = train_mask_paths + val_mask_paths + extra_mask_paths
     return img_paths, mask_paths
