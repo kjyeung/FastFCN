@@ -162,8 +162,7 @@ def get_city_pairs(folder, split='train'):
         mask_folder = os.path.join(folder, 'gtFine/'+ split)
         img_paths, mask_paths = get_path_pairs(img_folder, mask_folder)
         return img_paths, mask_paths
-    else:
-        assert split == 'trainval'
+    elif split == 'trainval':
         print('trainval set')
         train_img_folder = os.path.join(folder, 'leftImg8bit/train')
         train_mask_folder = os.path.join(folder, 'gtFine/train')
@@ -173,4 +172,19 @@ def get_city_pairs(folder, split='train'):
         val_img_paths, val_mask_paths = get_path_pairs(val_img_folder, val_mask_folder)
         img_paths = train_img_paths + val_img_paths
         mask_paths = train_mask_paths + val_mask_paths
+        return img_paths, mask_paths
+    else:
+        assert split == 'trainvalcoarse'
+        print('trainval and coarse set')
+        train_img_folder = os.path.join(folder, 'leftImg8bit/train')
+        train_mask_folder = os.path.join(folder, 'gtFine/train')
+        val_img_folder = os.path.join(folder, 'leftImg8bit/val')
+        val_mask_folder = os.path.join(folder, 'gtFine/val')
+        extra_img_folder = os.path.join(folder, 'leftImg8bit/train_extra')
+        extra_mask_folder = os.path.join(folder, 'gtCoarse/train_extra')
+        train_img_paths, train_mask_paths = get_path_pairs(train_img_folder, train_mask_folder)
+        val_img_paths, val_mask_paths = get_path_pairs(val_img_folder, val_mask_folder)
+        extra_img_paths, extra_mask_paths = get_path_pairs(extra_img_folder, extra_mask_folder)
+        img_paths = train_img_paths + val_img_paths + extra_img_paths
+        mask_paths = train_mask_paths + val_mask_paths + extra_mask_paths
     return img_paths, mask_paths
